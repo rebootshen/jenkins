@@ -52,10 +52,14 @@ RUN wget http://apache.communilink.net/maven/maven-3/3.3.9/binaries/apache-maven
 ADD 10-subversion.conf /etc/httpd/conf.modules.d/
 
 # Expose our jenkins data and log directories log.
-VOLUME ["/jenkins-data", "/var/log","/var/lib/jenkins"]
+VOLUME ["/jenkins-data", "/var/log","/var/lib/jenkins","/svn"]
 EXPOSE 8090 8019 80
 ###CMD ["/etc/init.d/jenkins","start"]
 ADD start.sh /opt/scripts/
-RUN chmod +x /opt/scripts/start.sh
+RUN chmod +x /opt/scripts/start.sh && \
+
+	mv /etc/localtime /root/old.timezoned && \
+	ln -s /usr/share/zoneinfo/Asia/Hong_Kong /etc/localtime
+
 ##CMD /opt/scripts/start.sh
 ENTRYPOINT ["/opt/scripts/start.sh"]

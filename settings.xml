@@ -41,7 +41,7 @@
                         <repositories>
                                 <repository>
                                         <id>central</id>
-                                        <url>http://localhost:8081/nexus/content/groups/repo_all</url>
+                                        <url>http://nexus:8081/content/groups/repo_all</url>
                                         <releases><enabled>true</enabled></releases>
                                         <snapshots>
                                                 <enabled>true</enabled>
@@ -67,7 +67,7 @@
                 <mirror>
                         <id>sino-nexus</id>
                         <name>SinoDynamic</name>
-                        <url>http://localhost:8081/nexus/content/groups/repo_all</url>
+                        <url>http://nexus:8081/content/groups/repo_all</url>
                         <mirrorOf>central</mirrorOf>
                 </mirror>
         </mirrors>
