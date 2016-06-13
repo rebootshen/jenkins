@@ -7,6 +7,7 @@ set -e
 #ln -s /jenkins-data/ /svn
 
 /etc/init.d/jenkins start
+/opt/sonar/bin/linux-x86-64/sonar.sh start
 /usr/sbin/httpd -k start
 /usr/sbin/postfix start
 

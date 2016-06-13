@@ -9,7 +9,7 @@ WORKDIR /opt/
 #helpful utils, but only sudo is required
 #RUN yum -y install nc
 RUN yum -y update && \
-	yum -y install wget tar sudo vim initscripts subversion mod_dav_svn git postfix unzip && \
+	yum -y install wget tar sudo vim initscripts subversion mod_dav_svn git postfix && \
 	adduser git
 
 ###### JENKINS2.8
@@ -48,20 +48,6 @@ RUN wget http://apache.communilink.net/maven/maven-3/3.3.9/binaries/apache-maven
 	ln -s /opt/maven/bin/mvn /usr/bin/mvn && \
 	chmod +x /etc/profile.d/maven.sh && \ 
 	source /etc/profile.d/maven.sh 
-
-###### SONAR
-RUN wget https://sonarsource.bintray.com/Distribution/sonarqube/sonarqube-4.5.7.zip && \
-	wget https://sonarsource.bintray.com/Distribution/sonar-scanner-cli/sonar-scanner-2.6.1.zip && \
-	wget https://sonarsource.bintray.com/Distribution/sonar-java-plugin/sonar-java-plugin-3.13.1.jar && \
-	wget https://sonarsource.bintray.com/Distribution/sonar-javascript-plugin/sonar-javascript-plugin-2.12.jar && \
-	wget http://central.maven.org/maven2/org/codehaus/sonar/plugins/sonar-findbugs-plugin/3.3.2/sonar-findbugs-plugin-3.3.2.jar && \
-	unzip sonarqube-4.5.7.zip && \
-	unzip sonar-scanner-2.6.1.zip && \
-	ln -s sonarqube-4.5.7 sonar && \
-	mv *jar /opt/sonar/extensions/plugins/ && \
-	rm -rf *zip
-
-
 
 ADD 10-subversion.conf /etc/httpd/conf.modules.d/
 
