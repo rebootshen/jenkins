@@ -73,7 +73,18 @@ ADD start.sh /opt/scripts/
 RUN chmod +x /opt/scripts/start.sh && \
 
 	mv /etc/localtime /root/old.timezoned && \
-	ln -s /usr/share/zoneinfo/Asia/Hong_Kong /etc/localtime
+	ln -s /usr/share/zoneinfo/Asia/Hong_Kong /etc/localtime && \
+	su git && \
+	cd && \
+	mkdir .ssh && chmod 700 .ssh && \
+	touch .ssh/authorized_keys && chmod 600 .ssh/authorized_keys && \
+
+	cd && \
+	mkdir project.git && \
+	cd project.git && \
+	git init --bare
+
+
 
 ##CMD /opt/scripts/start.sh
 ENTRYPOINT ["/opt/scripts/start.sh"]
