@@ -98,7 +98,7 @@ RUN chmod +x /opt/scripts/start.sh && \
 	sed -i "s/^UsePAM yes/#UsePAM yes/g" /etc/ssh/sshd_config && \
 	sed -i "s/^HostKey \/etc\/ssh\/ssh_host_dsa_key/#HostKey \/etc\/ssh\/ssh_host_dsa_key/g" /etc/ssh/sshd_config && \
 	sed -i "s/^HostKey \/etc\/ssh\/ssh_host_ecdsa_key/#HostKey \/etc\/ssh\/ssh_host_ecdsa_key/g" /etc/ssh/sshd_config && \
-	sed -i "s/^hostKey \/etc\/ssh\/ssh_host_ed25519_key/#hostKey \/etc\/ssh\/ssh_host_ed25519_key/g" /etc/ssh/sshd_config && \
+	sed -i "s/^HostKey \/etc\/ssh\/ssh_host_ed25519_key/#HostKey \/etc\/ssh\/ssh_host_ed25519_key/g" /etc/ssh/sshd_config && \
 	sed -i "s/^#AuthorizedKeysFile.*/AuthorizedKeysFile .ssh\/authorized_keys/g" /etc/ssh/sshd_config
 
 
