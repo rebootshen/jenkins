@@ -81,6 +81,7 @@ RUN chmod +x /opt/scripts/start.sh && \
 
 	mv /etc/localtime /root/old.timezoned && \
 	ln -s /usr/share/zoneinfo/Asia/Hong_Kong /etc/localtime && \
+	ln -s /tmp /var/www/html/image && \
 	echo 'git:Git@2016' |chpasswd && \
 	mkdir -p /home/git/.ssh && chmod 700 /home/git/.ssh && \
 
