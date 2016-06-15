@@ -10,6 +10,7 @@ set -e
 /opt/sonar/bin/linux-x86-64/sonar.sh start
 /usr/sbin/httpd -k start
 /usr/sbin/postfix start
+/usr/sbin/sshd
 
 touch /var/log/jenkins/jenkins.log
 chown -R jenkins.jenkins /var/log/jenkins/jenkins.log

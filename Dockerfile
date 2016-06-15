@@ -9,10 +9,10 @@ WORKDIR /opt/
 #helpful utils, but only sudo is required
 #RUN yum -y install nc
 RUN yum -y update && \
-	yum -y install wget tar sudo vim initscripts subversion mod_dav_svn git postfix unzip && \
+	yum -y install wget tar sudo vim initscripts subversion mod_dav_svn postfix unzip git openssh-server && \
 	adduser git
 
-###### JENKINS2.8
+###### JENKINS2.8-2.9
 
 RUN wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo && \
 	rpm --import http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key && \
@@ -62,29 +62,45 @@ RUN wget https://sonarsource.bintray.com/Distribution/sonarqube/sonarqube-4.5.7.
 	rm -rf *zip
 
 
-
-ADD 10-subversion.conf /etc/httpd/conf.modules.d/
-
 # Expose our jenkins data and log directories log.
 VOLUME ["/jenkins-data", "/var/log","/var/lib/jenkins","/svn"]
-EXPOSE 8090 8019 80
-###CMD ["/etc/init.d/jenkins","start"]
+EXPOSE 8090 8019 80 22
+
+ADD 10-subversion.conf /etc/httpd/conf.modules.d/
+ADD authorized_keys /home/git/.ssh/authorized_keys
+ADD ssh_host_rsa_key.pub  /etc/ssh/ssh_host_rsa_key.pub
+ADD ssh_host_rsa_key /etc/ssh/ssh_host_rsa_key
+
+
 ADD start.sh /opt/scripts/
+
+
+####	ssh-keygen -q -N '' -t rsa -f /etc/ssh/ssh_host_rsa_key && \
+####	touch /home/git/.ssh/authorized_keys && chmod 600 /home/git/.ssh/authorized_keys && \
 RUN chmod +x /opt/scripts/start.sh && \
 
 	mv /etc/localtime /root/old.timezoned && \
 	ln -s /usr/share/zoneinfo/Asia/Hong_Kong /etc/localtime && \
-	su git && \
-	cd && \
-	mkdir .ssh && chmod 700 .ssh && \
-	touch .ssh/authorized_keys && chmod 600 .ssh/authorized_keys && \
+	echo 'git:Git@2016' |chpasswd && \
+	mkdir -p /home/git/.ssh && chmod 700 /home/git/.ssh && \
 
-	cd && \
-	mkdir project.git && \
-	cd project.git && \
-	git init --bare
+	mkdir -p /git/project.git && \
+	cd /git/project.git && \
+	git init --bare && \
+	chmod 600 /home/git/.ssh/authorized_keys && \
+	chown -R git.git /home/git/.ssh && \
+	chown -R git.git /git/project.git && \
+
+	sed -i "s/^PasswordAuthentication.*/PasswordAuthentication no/g" /etc/ssh/sshd_config && \
+	sed -i "s/^#RSAAuthentication.*/RSAAuthentication yes/g" /etc/ssh/sshd_config && \
+	sed -i "s/^#PubkeyAuthentication.*/PubkeyAuthentication yes/g" /etc/ssh/sshd_config && \
+	sed -i "s/^UsePAM yes/#UsePAM yes/g" /etc/ssh/sshd_config && \
+	sed -i "s/^HostKey \/etc\/ssh\/ssh_host_dsa_key/#HostKey \/etc\/ssh\/ssh_host_dsa_key/g" /etc/ssh/sshd_config && \
+	sed -i "s/^HostKey \/etc\/ssh\/ssh_host_ecdsa_key/#HostKey \/etc\/ssh\/ssh_host_ecdsa_key/g" /etc/ssh/sshd_config && \
+	sed -i "s/^hostKey \/etc\/ssh\/ssh_host_ed25519_key/#hostKey \/etc\/ssh\/ssh_host_ed25519_key/g" /etc/ssh/sshd_config && \
+	sed -i "s/^#AuthorizedKeysFile.*/AuthorizedKeysFile .ssh\/authorized_keys/g" /etc/ssh/sshd_config
 
 
-
+##CMD ["/etc/init.d/jenkins","start"]
 ##CMD /opt/scripts/start.sh
 ENTRYPOINT ["/opt/scripts/start.sh"]
