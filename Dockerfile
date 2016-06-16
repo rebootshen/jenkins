@@ -49,7 +49,17 @@ RUN wget http://apache.communilink.net/maven/maven-3/3.3.9/binaries/apache-maven
 	chmod +x /etc/profile.d/maven.sh && \ 
 	source /etc/profile.d/maven.sh 
 
+###### GRADLE
+
+ADD gradle-env.sh /etc/profile.d/
+RUN wget https://services.gradle.org/distributions/gradle-2.13-bin.zip && \
+	unzip gradle-2.13-bin.zip ; rm -rf gradle-2.13-bin.zip && \
+	ln -s gradle-2.13 gradle && \
+        chmod +x /etc/profile.d/gradle-env.sh && \
+        source /etc/profile.d/gradle-env.sh
+
 ###### SONAR
+
 RUN wget https://sonarsource.bintray.com/Distribution/sonarqube/sonarqube-4.5.7.zip && \
 	wget https://sonarsource.bintray.com/Distribution/sonar-scanner-cli/sonar-scanner-2.6.1.zip && \
 	wget https://sonarsource.bintray.com/Distribution/sonar-java-plugin/sonar-java-plugin-3.13.1.jar && \
@@ -61,19 +71,6 @@ RUN wget https://sonarsource.bintray.com/Distribution/sonarqube/sonarqube-4.5.7.
 	mv *jar /opt/sonar/extensions/plugins/ && \
 	rm -rf *zip
 
-###### GRADLE
-ADD gradle-env.sh /etc/profile.d/
-RUN wget https://services.gradle.org/distributions/gradle-2.13-bin.zip && \
-	unzip gradle-2.13-bin.zip ; rm -rf gradle-2.13-bin.zip && \
-	ln -s gradle-2.13 gradle && \
-        chmod +x /etc/profile.d/gradle-env.sh && \
-        source /etc/profile.d/gradle-env.sh
-
-
-
-# Expose our jenkins data and log directories log.
-VOLUME ["/jenkins-data", "/var/log","/var/lib/jenkins","/svn"]
-EXPOSE 8090 8019 80 22
 
 ###### GIT & SVN
 
@@ -86,22 +83,33 @@ ADD start.sh /opt/scripts/
 
 ####	ssh-keygen -q -N '' -t rsa -f /etc/ssh/ssh_host_rsa_key && \
 ####	touch /home/git/.ssh/authorized_keys && chmod 600 /home/git/.ssh/authorized_keys && \
+####    for master and slave, change to yes
+####	sed -i "s/^PasswordAuthentication.*/PasswordAuthentication no/g" /etc/ssh/sshd_config && \
+####	mkdir -p /var/lib/jenkins/jenkins_slave && \
+####    mkdir -p /var/lib/jenkins/.ssh && chmod 700 /var/lib/jenkins/.ssh && \
+####	touch /var/lib/jenkins/.ssh/authorized_keys && chmod 600 /var/lib/jenkins/.ssh/authorized_keys && \
+####	chown -R jenkins.jenkins /var/lib/jenkins && \
+
 RUN chmod +x /opt/scripts/start.sh && \
 
 	mv /etc/localtime /root/old.timezoned && \
 	ln -s /usr/share/zoneinfo/Asia/Hong_Kong /etc/localtime && \
 	ln -s /tmp /var/www/html/image && \
+
+	chsh -s /bin/bash jenkins && \
+        echo 'jenkins:Admin2016' |chpasswd && \
+
+
 	echo 'git:Git@2016' |chpasswd && \
 	mkdir -p /home/git/.ssh && chmod 700 /home/git/.ssh && \
-
+	chmod 600 /home/git/.ssh/authorized_keys && \
 	mkdir -p /git/project.git && \
 	cd /git/project.git && \
 	git init --bare && \
-	chmod 600 /home/git/.ssh/authorized_keys && \
 	chown -R git.git /home/git/.ssh && \
 	chown -R git.git /git/project.git && \
 
-	sed -i "s/^PasswordAuthentication.*/PasswordAuthentication no/g" /etc/ssh/sshd_config && \
+	sed -i "s/^PasswordAuthentication.*/PasswordAuthentication yes/g" /etc/ssh/sshd_config && \
 	sed -i "s/^#RSAAuthentication.*/RSAAuthentication yes/g" /etc/ssh/sshd_config && \
 	sed -i "s/^#PubkeyAuthentication.*/PubkeyAuthentication yes/g" /etc/ssh/sshd_config && \
 	sed -i "s/^UsePAM yes/#UsePAM yes/g" /etc/ssh/sshd_config && \
@@ -110,6 +118,10 @@ RUN chmod +x /opt/scripts/start.sh && \
 	sed -i "s/^HostKey \/etc\/ssh\/ssh_host_ed25519_key/#HostKey \/etc\/ssh\/ssh_host_ed25519_key/g" /etc/ssh/sshd_config && \
 	sed -i "s/^#AuthorizedKeysFile.*/AuthorizedKeysFile .ssh\/authorized_keys/g" /etc/ssh/sshd_config
 
+
+# Expose our jenkins data and log directories log.
+VOLUME ["/var/log","/var/lib/jenkins","/svn","/git","/backup/key"]
+EXPOSE 8090 8019 80 22
 
 ##CMD ["/etc/init.d/jenkins","start"]
 ##CMD /opt/scripts/start.sh

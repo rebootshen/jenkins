@@ -11,6 +11,12 @@ set -e
 /usr/sbin/httpd -k start
 /usr/sbin/postfix start
 /usr/sbin/sshd
+/usr/bin/ssh-keygen -q -t rsa -N '' -f /backup/key/id_rsa
+
+mkdir -p /var/lib/jenkins/jenkins_slave && \
+mkdir -p /var/lib/jenkins/.ssh && chmod 700 /var/lib/jenkins/.ssh && \
+touch /var/lib/jenkins/.ssh/authorized_keys && chmod 600 /var/lib/jenkins/.ssh/authorized_keys && \
+chown -R jenkins.jenkins /var/lib/jenkins
 
 touch /var/log/jenkins/jenkins.log
 chown -R jenkins.jenkins /var/log/jenkins/jenkins.log
