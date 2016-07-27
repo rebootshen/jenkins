@@ -11,6 +11,7 @@ set -e
 /usr/sbin/httpd -k start
 /usr/sbin/postfix start
 /usr/sbin/sshd
+rm -rf /backup/key/id_rsa*
 /usr/bin/ssh-keygen -q -t rsa -N '' -f /backup/key/id_rsa
 
 mkdir -p /var/lib/jenkins/jenkins_slave && \
