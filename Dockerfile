@@ -16,7 +16,9 @@ RUN yum -y update && \
 
 RUN wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo && \
 	rpm --import http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key && \
-	yum -y install jenkins
+        wget http://pkg.jenkins.io/redhat/jenkins-2.7-1.1.noarch.rpm && \
+	yum -y install jenkins-2.7-1.1.noarch.rpm
+######	yum -y install jenkins
 ADD settings.xml /var/lib/jenkins/
 RUN sed -ri "s/8080/8090/g" /etc/sysconfig/jenkins && \
 	sed -ri "s/8009/8019/g" /etc/sysconfig/jenkins && \
@@ -91,7 +93,7 @@ ADD start.sh /opt/scripts/
 ####	chown -R jenkins.jenkins /var/lib/jenkins && \
 
 RUN chmod +x /opt/scripts/start.sh && \
-
+    chmod 700 /etc/ssh/ssh_host* && \
 	mv /etc/localtime /root/old.timezoned && \
 	ln -s /usr/share/zoneinfo/Asia/Hong_Kong /etc/localtime && \
 	ln -s /tmp /var/www/html/image && \
