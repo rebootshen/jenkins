@@ -1,0 +1,109 @@
+version: '2'
+
+networks:
+  prodnetwork:
+    driver: bridge
+
+services:
+ jenkins:
+  image: rebootshen/jenkins
+  container_name: jenkins
+  ports:
+    - "8090:8090"
+    - "8022:22"
+    - "80:80"
+    - "8019:8019"
+    - "9000:9000"
+    - "25:25"
+  networks:
+    - prodnetwork
+  volumes_from:
+    - DATA
+  links:
+    - artifactory
+    - tomcat
+    - mysql
+    - selenium-hub
+
+ artifactory:
+  image: docker.bintray.io/jfrog/artifactory-oss
+  container_name: artifactory
+  ports:
+    - "8081:8081"
+  networks:
+    - prodnetwork
+  volumes_from:
+    - DATA
+    
+ tomcat:
+  image: rebootshen/tomcat
+  container_name: tomcat
+  ports:
+    - "8080:8080"
+  networks:
+    - prodnetwork
+  links:
+    - mysql
+  environment:
+    - CATALINA_OUT=/logs/catalina.out
+  volumes_from:
+    - DATA
+    
+ mysql:
+  image: mysql:5.7
+  container_name: mysql
+  ports:
+    - "3306:3306"
+  networks:
+    - prodnetwork
+  environment:
+    - MYSQL_ROOT_PASSWORD=root
+  volumes_from:
+    - DATA
+
+ selenium-hub:
+  image: selenium/hub:2.53.0
+  container_name: selenium-hub
+  ports:
+    - "4444:4444"
+  networks:
+    - prodnetwork
+ nodeff:
+  image: selenium/node-firefox:2.53.0
+  ports:
+    - 5900
+  networks:
+    - prodnetwork
+  environment:
+   - HUB_PORT_4444_TCP_ADDR=selenium-hub
+  links:
+    - selenium-hub
+ nodechrome:
+  image: selenium/node-chrome:2.53.0
+  ports:
+    - 5900
+  networks:
+    - prodnetwork
+  environment:
+   - HUB_PORT_4444_TCP_ADDR=selenium-hub
+  links:
+    - selenium-hub
+
+ DATA:
+  image: rebootshen/demo-data
+  container_name: DATA
+  networks:
+    - prodnetwork
+  volumes:
+    - /var/opt/jfrog/artifactory
+    - /var/lib/jenkins
+    - /var/lib/mysql
+    - /logs
+    - /backup
+    - /git
+    - /svn
+    - /sonatype-work
+    - /c/Users/Sam/Documents/DEV/puppet-server/modules:/etc/puppet/modules
+    - /c/Users/Sam/Documents/DEV/puppet-server/manifests:/etc/puppet/manifests
+  command: 'true'
+  
