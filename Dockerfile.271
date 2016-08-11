@@ -16,8 +16,8 @@ RUN yum -y update && \
 
 RUN wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo && \
 	rpm --import http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key && \
-	wget http://pkg.jenkins.io/redhat-stable/jenkins-2.7.2-1.1.noarch.rpm && \
-	yum -y install jenkins-2.7.2-1.1.noarch.rpm
+        wget http://pkg.jenkins.io/redhat/jenkins-2.7-1.1.noarch.rpm && \
+	yum -y install jenkins-2.7-1.1.noarch.rpm
 ######	yum -y install jenkins
 ADD settings.xml /var/lib/jenkins/
 RUN sed -ri "s/8080/8090/g" /etc/sysconfig/jenkins && \
@@ -62,16 +62,14 @@ RUN wget https://services.gradle.org/distributions/gradle-2.13-bin.zip && \
 
 ###### SONAR
 
-RUN wget https://sonarsource.bintray.com/Distribution/sonarqube/sonarqube-5.6.1.zip && \
+RUN wget https://sonarsource.bintray.com/Distribution/sonarqube/sonarqube-4.5.7.zip && \
 	wget https://sonarsource.bintray.com/Distribution/sonar-scanner-cli/sonar-scanner-2.6.1.zip && \
-	wget https://sonarsource.bintray.com/Distribution/sonar-java-plugin/sonar-java-plugin-4.1.jar && \
-	wget https://sonarsource.bintray.com/Distribution/sonar-javascript-plugin/sonar-javascript-plugin-2.14.jar && \
-	wget https://sonarsource.bintray.com/Distribution/sonar-csharp-plugin/sonar-csharp-plugin-5.3.2.jar && \
-	wget https://sonarsource.bintray.com/CommercialDistribution/sonar-cpp-plugin/sonar-cpp-plugin-4.0.jar && \
-	wget http://central.maven.org/maven2/org/sonarsource/sonar-findbugs-plugin/sonar-findbugs-plugin/3.3/sonar-findbugs-plugin-3.3.jar && \
-	unzip sonarqube-5.6.1.zip && \
+	wget https://sonarsource.bintray.com/Distribution/sonar-java-plugin/sonar-java-plugin-3.13.1.jar && \
+	wget https://sonarsource.bintray.com/Distribution/sonar-javascript-plugin/sonar-javascript-plugin-2.12.jar && \
+	wget http://central.maven.org/maven2/org/codehaus/sonar/plugins/sonar-findbugs-plugin/3.3.2/sonar-findbugs-plugin-3.3.2.jar && \
+	unzip sonarqube-4.5.7.zip && \
 	unzip sonar-scanner-2.6.1.zip && \
-	ln -s sonarqube-5.6.1 sonar && \
+	ln -s sonarqube-4.5.7 sonar && \
 	mv *jar /opt/sonar/extensions/plugins/ && \
 	rm -rf *zip
 
