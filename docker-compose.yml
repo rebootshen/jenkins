@@ -15,16 +15,73 @@ services:
     - "8019:8019"
     - "9000:9000"
     - "25:25"
+    - "7777:7777"
   networks:
     - prodnetwork
+  dns:
+    - 8.8.8.8
+    - 8.8.4.4
   volumes_from:
     - DATA
+#    - "$VOLUMES_FROM"
   links:
     - artifactory
     - tomcat
     - mysql
     - selenium-hub
-
+    - opensuse
+    
+# worker_java:
+#  image: rebootshen/jenkins
+#  restart: always
+#  ports:
+#    - "8190:8090"
+#  networks:
+#    - prodnetwork
+#  volumes_from:
+#    - DATA_SLAVE_JAVA
+#  links:
+#    - artifactory
+#    - tomcat
+#    - mysql
+#    - selenium-hub
+#  environment:
+#    - JAVA_OPTS=-Xmx2048m
+#    - JENKINS_NAME=worker
+#    - JENKINS_RETRY=10
+#  env_file:
+#    - secret.txt
+    
+# worker_c:
+#  image: rebootshen/jenkins
+#  restart: always
+#  ports:
+#    - "8290:8090"
+#  networks:
+#    - prodnetwork
+#  volumes_from:
+#    - DATA_SLAVE_C
+#  links:
+#    - artifactory
+#    - tomcat
+#    - mysql
+#    - selenium-hub
+#  environment:
+#    - JAVA_OPTS=-Xmx2048m
+#    - JENKINS_NAME=worker
+#    - JENKINS_RETRY=10
+#  env_file:
+#    - secret.txt
+ opensuse:
+  image: rebootshen/opensuse-cpp
+  container_name: opensuse
+  ports:
+    - "8122:22"
+  networks:
+    - prodnetwork
+  volumes_from:
+    - DATA
+    
  artifactory:
   image: docker.bintray.io/jfrog/artifactory-oss
   container_name: artifactory
@@ -70,6 +127,7 @@ services:
     - prodnetwork
  nodeff:
   image: selenium/node-firefox:2.53.0
+  container_name: firefox1
   ports:
     - 5900
   networks:
@@ -80,6 +138,7 @@ services:
     - selenium-hub
  nodechrome:
   image: selenium/node-chrome:2.53.0
+  container_name: chrome1
   ports:
     - 5900
   networks:
@@ -105,5 +164,33 @@ services:
     - /sonatype-work
     - /c/Users/Sam/Documents/DEV/puppet-server/modules:/etc/puppet/modules
     - /c/Users/Sam/Documents/DEV/puppet-server/manifests:/etc/puppet/manifests
-  command: 'true'
+#  command: /bin/true
+  
+# DATA_SLAVE_JAVA:
+#  image: rebootshen/demo-data
+#  container_name: DATA_SLAVE_JAVA
+#  networks:
+#    - prodnetwork
+#  volumes:
+#    - /var/opt/jfrog/artifactory
+#    - /var/lib/jenkins
+#    - /var/lib/mysql
+#    - /logs
+#    - /backup
+#    - /git
+#  command: /bin/true
+  
+# DATA_SLAVE_C:
+#  image: rebootshen/demo-data
+#  container_name: DATA_SLAVE_C
+#  networks:
+#    - prodnetwork
+#  volumes:
+#    - /var/opt/jfrog/artifactory
+#    - /var/lib/jenkins
+#    - /var/lib/mysql
+#    - /logs
+#    - /backup
+#    - /git
+#  command: /bin/true
   

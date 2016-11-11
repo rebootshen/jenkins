@@ -4,7 +4,8 @@
 # Stop on error
 set -e
 
-#ln -s /jenkins-data/ /svn
+touch /var/log/jenkins/jenkins.log
+chown -R jenkins.jenkins /var/log/jenkins/jenkins.log
 
 /etc/init.d/jenkins start
 /opt/sonar/bin/linux-x86-64/sonar.sh start
@@ -14,11 +15,4 @@ set -e
 rm -rf /backup/key/id_rsa*
 /usr/bin/ssh-keygen -q -t rsa -N '' -f /backup/key/id_rsa
 
-mkdir -p /var/lib/jenkins/jenkins_slave && \
-mkdir -p /var/lib/jenkins/.ssh && chmod 700 /var/lib/jenkins/.ssh && \
-touch /var/lib/jenkins/.ssh/authorized_keys && chmod 600 /var/lib/jenkins/.ssh/authorized_keys && \
-chown -R jenkins.jenkins /var/lib/jenkins
-
-touch /var/log/jenkins/jenkins.log
-chown -R jenkins.jenkins /var/log/jenkins/jenkins.log
 tail -f /var/log/jenkins/jenkins.log

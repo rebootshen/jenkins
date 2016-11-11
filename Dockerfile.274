@@ -9,7 +9,7 @@ WORKDIR /opt/
 #helpful utils, but only sudo is required
 #RUN yum -y install nc
 RUN yum -y update && \
-	yum -y install wget tar sudo vim initscripts subversion mod_dav_svn postfix unzip git openssh-server net-tools && \
+	yum -y install wget tar sudo vim initscripts subversion mod_dav_svn postfix unzip git openssh-server && \
 	adduser git
 
 ###### JDK8
@@ -45,20 +45,20 @@ ADD gradle-env.sh /etc/profile.d/
 RUN wget https://services.gradle.org/distributions/gradle-2.13-bin.zip && \
 	unzip gradle-2.13-bin.zip ; rm -rf gradle-2.13-bin.zip && \
 	ln -s gradle-2.13 gradle && \
-    chmod +x /etc/profile.d/gradle-env.sh && \
-    source /etc/profile.d/gradle-env.sh
+        chmod +x /etc/profile.d/gradle-env.sh && \
+        source /etc/profile.d/gradle-env.sh
 
-###### JENKINS2.19
+###### JENKINS2.8-2.9
 
 RUN wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo && \
 	rpm --import http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key && \
-	wget http://pkg.jenkins.io/redhat-stable/jenkins-2.19.2-1.1.noarch.rpm && \
-	yum -y install jenkins-2.19.2-1.1.noarch.rpm && \
-
-    sed -ri "s/8080/8090/g" /etc/sysconfig/jenkins && \
+	wget http://pkg.jenkins.io/redhat-stable/jenkins-2.7.4-1.1.noarch.rpm && \
+	yum -y install jenkins-2.7.4-1.1.noarch.rpm
+######	yum -y install jenkins
+ADD settings.xml /var/lib/jenkins/
+RUN sed -ri "s/8080/8090/g" /etc/sysconfig/jenkins && \
 	sed -ri "s/8009/8019/g" /etc/sysconfig/jenkins && \
-	mkdir -p /var/lib/jenkins/.ssh && chmod 700 /var/lib/jenkins/.ssh && \
-    touch /var/lib/jenkins/.ssh/authorized_keys && chmod 600 /var/lib/jenkins/.ssh/authorized_keys
+	chown -R jenkins.jenkins /var/lib/jenkins/settings.xml
 
 
 ###### SONAR
@@ -70,17 +70,15 @@ RUN wget https://sonarsource.bintray.com/Distribution/sonarqube/sonarqube-5.6.1.
 	wget https://sonarsource.bintray.com/Distribution/sonar-csharp-plugin/sonar-csharp-plugin-5.3.2.jar && \
 
 	wget http://central.maven.org/maven2/org/sonarsource/sonar-findbugs-plugin/sonar-findbugs-plugin/3.3/sonar-findbugs-plugin-3.3.jar && \
-	wget https://github.com/jmecosta/sonar-cxx/releases/download/test1/sonar-cxx-plugin-0.9.7-SNAPSHOT.jar && \
+	wget https://github.com/SonarOpenCommunity/sonar-cxx/releases/download/cxx-0.9.6/sonar-cxx-plugin-0.9.6.jar && \
 	unzip sonarqube-5.6.1.zip && \
 	unzip sonar-scanner-2.6.1.zip && \
 	ln -s sonarqube-5.6.1 sonar && \
 	mv *jar /opt/sonar/extensions/plugins/ && \
 	rm -rf *zip
 
-### need license
+###need license
 ###		wget https://sonarsource.bintray.com/CommercialDistribution/sonar-cpp-plugin/sonar-cpp-plugin-4.0.jar && \
-### error need fix:
-###	    wget https://github.com/SonarOpenCommunity/sonar-cxx/releases/download/cxx-0.9.6/sonar-cxx-plugin-0.9.6.jar && \
 
 ###### GIT & SVN
 
@@ -91,11 +89,14 @@ ADD ssh_host_rsa_key /etc/ssh/ssh_host_rsa_key
 
 ADD start.sh /opt/scripts/
 
-ADD settings.xml /var/lib/jenkins/
-COPY slave/config /var/lib/jenkins/.ssh/config
-COPY slave/id_rsa /var/lib/jenkins/.ssh/id_rsa
-COPY slave/id_rsa.pub /var/lib/jenkins/.ssh/id_rsa.pub
-
+####	ssh-keygen -q -N '' -t rsa -f /etc/ssh/ssh_host_rsa_key && \
+####	touch /home/git/.ssh/authorized_keys && chmod 600 /home/git/.ssh/authorized_keys && \
+####    for master and slave, change to yes
+####	sed -i "s/^PasswordAuthentication.*/PasswordAuthentication no/g" /etc/ssh/sshd_config && \
+####	mkdir -p /var/lib/jenkins/jenkins_slave && \
+####    mkdir -p /var/lib/jenkins/.ssh && chmod 700 /var/lib/jenkins/.ssh && \
+####	touch /var/lib/jenkins/.ssh/authorized_keys && chmod 600 /var/lib/jenkins/.ssh/authorized_keys && \
+####	chown -R jenkins.jenkins /var/lib/jenkins && \
 
 RUN chmod +x /opt/scripts/start.sh && \
     chmod 700 /etc/ssh/ssh_host* && \
@@ -104,17 +105,12 @@ RUN chmod +x /opt/scripts/start.sh && \
 	ln -s /tmp /var/www/html/image && \
 
 	chsh -s /bin/bash jenkins && \
-    echo 'jenkins:Admin2016' |chpasswd && \
-	
-	chmod 600 /var/lib/jenkins/.ssh/config && \
-	chmod 600 /var/lib/jenkins/.ssh/id_rsa && \
-	chown -R jenkins.jenkins /var/lib/jenkins/.ssh && \
-	chown -R jenkins.jenkins /var/lib/jenkins && \
+        echo 'jenkins:Admin2016' |chpasswd && \
+
 
 	echo 'git:Git@2016' |chpasswd && \
 	mkdir -p /home/git/.ssh && chmod 700 /home/git/.ssh && \
 	chmod 600 /home/git/.ssh/authorized_keys && \
-		
 	mkdir -p /git/project.git && \
 	cd /git/project.git && \
 	git init --bare && \
