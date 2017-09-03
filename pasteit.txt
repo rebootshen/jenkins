@@ -1,3 +1,8 @@
+http://maven.apache.org/surefire/maven-failsafe-plugin/
+http://thucydides.info/docs/serenity-staging/
+https://github.com/serenity-bdd/serenity-maven-plugin/issues/25
+https://dzone.com/articles/configuring-different-output-directories-with-sere
+
 pom.xml
 
 </dependencies>
