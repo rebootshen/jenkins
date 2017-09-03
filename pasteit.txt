@@ -1,3 +1,6 @@
+https://gitlab.nal.vn/tunn/my-demo-ci-project/tree/master/demo-java-ci/demo-bdd-stories
+https://gitlab.nal.vn/tunn/my-demo-ci-project/commit/da84b1a3da4064cf1e237cbc2c939cdcf50b22fa?expand_all_diffs=1
+
 http://www.thucydides.info/docs/serenity/#_serenity_system_properties_and_configuration
 https://johnfergusonsmart.com/configuring-different-output-directories-serenity-bdd-maven/
 
@@ -5,7 +8,59 @@ http://maven.apache.org/surefire/maven-failsafe-plugin/
 http://thucydides.info/docs/serenity-staging/
 https://github.com/serenity-bdd/serenity-maven-plugin/issues/25
 https://dzone.com/articles/configuring-different-output-directories-with-sere
+==
+https://github.com/robotframework/HowToWriteGoodTestCases/blob/master/HowToWriteGoodTestCases.rst
+https://blog.codecentric.de/en/2010/07/how-to-structure-a-scalable-and-maintainable-acceptance-test-suite/
 
+http://www.itguai.com/android/a4454071.html
+public class AcceptanceTestSuite extends SerenityStories {
+    @Managed
+    WebDriver driver;
+
+    public AcceptanceTestSuite() {
+    System.setProperty("webdriver.chrome.driver", "D:/files/chromedriver/chromedriver.exe");
+    System.setProperty("chrome.switches", "--lang=en");
+    System.setProperty("restart.browser.each.scenario", "true");
+    configuredEmbedder().useMetaFilters(Arrays.asList("-skip"));
+
+    runSerenity().withDriver("chrome"); 
+    }
+
+===
+	@Before
+	public void init() throws IOException {
+		Properties prop = new Properties();
+		prop.load(VoidTransactionTest.class
+				.getResourceAsStream("/unittest-application.properties"));
+		host = prop.getProperty("target.host");
+	}
+	====
+	
+		        private void loadProperties() {
+144	                try {
+145	                        properties.load(AcceptanceTestSuite.class.getResourceAsStream(getPropertiesFilePath()));
+146	                } catch (Exception ex) {
+147	                        logger.error(ex.getMessage());
+148	                }
+149	        }
+
+mvn clean install -Dwebdriver.driver=firefox -Dwebdriver.base.url=http://testsite.com -Dmetafilter="+suite suiteName -skip" -Dthucydides.take.screenshots=FOR_FAILURES -Dthucydides.activate.firebugs=true
+
+	===================
+	public PCIRestHttpRequest() {
+		Properties properties = new Properties();
+		try {
+			properties.load(this.getClass().getResourceAsStream("/application.properties"));
+			pciUrl = properties.getProperty("pci.host");
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+
+====
 pom.xml
 
 </dependencies>
