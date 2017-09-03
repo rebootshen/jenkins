@@ -1,4 +1,5 @@
 http://www.thucydides.info/docs/serenity/#_serenity_system_properties_and_configuration
+https://johnfergusonsmart.com/configuring-different-output-directories-serenity-bdd-maven/
 
 http://maven.apache.org/surefire/maven-failsafe-plugin/
 http://thucydides.info/docs/serenity-staging/
