@@ -1,185 +1,65 @@
+
+
 Hi Sachin,
-I have been worked at HSBC for 1 month.During this month, I meet a lots good people, HK team, UK team, India team, Guangzhou team and Xi`an team,and familiar with my job now.
-As DevOps Lead, I lead a team to push DevOps transformation for DTC NewUI project.Mostly Communication and Collaboration , sometimes coding by hands myself.
+
+ 
+
+I have been worked at HSBC for 1 month.
+
+During this month, I meet a lots good people, HK team, UK
+team, India team, Guangzhou team and Xi`an team, and familiar with my job now.
+
+As DevOps Lead, I lead a team to push DevOps transformation
+for DTC NewUI project.
+
+Mostly Communication and Collaboration , sometimes coding by
+hands myself.
+
+ 
+
 Progress achieved:
-Integrated jenkins with github,integrated jira with github,Pushed tasks of housekeeping on github branches, houreskeeping on teamsite foldersMonitoring server healthy status with AppDynamics 
-Increased jenkins server from only 1 to 5 now.Not only make improvement on tools chain, also I tried to improve deployment workflow, automation testing workflow,scrum worflow.please check following link for more details:https://alm-confluence.systems.uk.hsbc/confluence/display/DTCSS/DevOps+Transformation
-Currently I focus on automation testing , guide another qa FT team at Xi`an to do health checking/ sanity testing / smoke testing / regression testing, and integrate with our DevOps pipeline.
-In the future, I will work with global automation testing team, let more teams benefit from dtc-UI-Automation .Next I will try to setup virtue service server LISA(DevTest), to save team time from unstable server environment. I believe I will understand front end architecture, back end architecture more and more .And bring more value to HSBC and our company.
 
+Integrated jenkins with github,integrated jira with github,
 
+Pushed tasks of housekeeping on github branches,
+houreskeeping on teamsite folders,
 
+Monitoring server healthy status with AppDynamics 
 
+Increased jenkins server from only 1 to 5 now.
 
-https://gitlab.nal.vn/tunn/my-demo-ci-project/tree/master/demo-java-ci/demo-bdd-stories
-https://gitlab.nal.vn/tunn/my-demo-ci-project/commit/da84b1a3da4064cf1e237cbc2c939cdcf50b22fa?expand_all_diffs=1
+ 
 
-http://www.thucydides.info/docs/serenity/#_serenity_system_properties_and_configuration
-https://johnfergusonsmart.com/configuring-different-output-directories-serenity-bdd-maven/
+Not only maked improvement on tools chain, also I tried to
+improve deployment workflow, automation testing workflow, scrum workflow.
 
-http://maven.apache.org/surefire/maven-failsafe-plugin/
-http://thucydides.info/docs/serenity-staging/
-https://github.com/serenity-bdd/serenity-maven-plugin/issues/25
-https://dzone.com/articles/configuring-different-output-directories-with-sere
-==
-https://github.com/robotframework/HowToWriteGoodTestCases/blob/master/HowToWriteGoodTestCases.rst
-https://blog.codecentric.de/en/2010/07/how-to-structure-a-scalable-and-maintainable-acceptance-test-suite/
+please check following link for more details:
 
-http://www.itguai.com/android/a4454071.html
-public class AcceptanceTestSuite extends SerenityStories {
-    @Managed
-    WebDriver driver;
+https://alm-confluence.systems.uk.hsbc/confluence/display/DTCSS/DevOps+Transformation
 
-    public AcceptanceTestSuite() {
-    System.setProperty("webdriver.chrome.driver", "D:/files/chromedriver/chromedriver.exe");
-    System.setProperty("chrome.switches", "--lang=en");
-    System.setProperty("restart.browser.each.scenario", "true");
-    configuredEmbedder().useMetaFilters(Arrays.asList("-skip"));
+ 
 
-    runSerenity().withDriver("chrome"); 
-    }
+Currently I focus on automation testing , guide another qa
+FT team at Xi`an to do health checking/ sanity testing / smoke testing /
+regression testing, 
 
-===
-	@Before
-	public void init() throws IOException {
-		Properties prop = new Properties();
-		prop.load(VoidTransactionTest.class
-				.getResourceAsStream("/unittest-application.properties"));
-		host = prop.getProperty("target.host");
-	}
-	====
-	
-		        private void loadProperties() {
-144	                try {
-145	                        properties.load(AcceptanceTestSuite.class.getResourceAsStream(getPropertiesFilePath()));
-146	                } catch (Exception ex) {
-147	                        logger.error(ex.getMessage());
-148	                }
-149	        }
+and integrate with our DevOps pipeline.
 
-mvn clean install -Dwebdriver.driver=firefox -Dwebdriver.base.url=http://testsite.com -Dmetafilter="+suite suiteName -skip" -Dthucydides.take.screenshots=FOR_FAILURES -Dthucydides.activate.firebugs=true
+ 
 
-	===================
-	public PCIRestHttpRequest() {
-		Properties properties = new Properties();
-		try {
-			properties.load(this.getClass().getResourceAsStream("/application.properties"));
-			pciUrl = properties.getProperty("pci.host");
+In the future, I will work with global automation testing
+team, let more teams benefit from dtc-UI-Automation .
 
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+Next I will try to setup virtue service server
+LISA(DevTest), to save team time from unstable server environment, and use
+AppDynamics to investigate issues our team face.
 
+I believe when I understand front end architecture, back end
+architecture more and more , I will bring more values to HSBC and our company.
 
-====
-pom.xml
+ 
 
-</dependencies>
+Regards,
 
-	<profiles>
-		<profile>
-			<id>dev_local</id>
-			<properties>
-				<env>dev_local</env>
-				<ip>localhost:8080</ip>
-				<manager>manager</manager>
-			</properties>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-		</profile>
-		<profile>
-			<id>dev_localdb</id>
-			<properties>
-				<env>dev_localdb</env>
-				<ip>localdbserver:8080</ip>
-				<manager>manager</manager>
-			</properties>
-		</profile>
-		<profile>
-			<id>dev_sit1</id>
-			<properties>
-				<env>dev_sit1</env>
-				<ip>10.0.101.205:8080</ip>
-				<manager>manager</manager>
-			</properties>
-		</profile>
-		<profile>
-			<id>dev_sit2</id>
-			<properties>
-				<env>dev_sit2</env>
-				<ip>10.0.101.206:8080</ip>
-				<manager>manager</manager>
-			</properties>
-		</profile>
-		<profile>
-			<id>dev_uat</id>
-			<properties>
-				<env>dev_uat</env>
-				<ip>10.0.101.204:8080</ip>
-				<manager>manager</manager>
-			</properties>
-		</profile>
-		<profile>
-			<id>smc_pro203</id>
-			<properties>
-				<env>smc_pro</env>
-				<ip>www.kissco.com:8080</ip>
-				<manager>manager203</manager>
-			</properties>
-		</profile>
-		<profile>
-			<id>smc_pro204</id>
-			<properties>
-				<env>smc_pro</env>
-				<ip>www.kissco.com:8080</ip>
-				<manager>manager204</manager>
-			</properties>
-		</profile>
-		<profile>
-			<id>smc_uat201</id>
-			<properties>
-				<env>smc_uat</env>
-				<ip>www2.kissco.com</ip>
-				<manager>manager201</manager>
-			</properties>
-		</profile>
-		<profile>
-			<id>smc_uat202</id>
-			<properties>
-				<env>smc_uat</env>
-				<ip>www2.kissco.com</ip>
-				<manager>manager202</manager>
-			</properties>
-		</profile>
-		<profile>
-			<id>smc_sino</id>
-			<properties>
-				<env>smc_sino</env>
-			</properties>
-		</profile>
-		<profile>
-			<id>dev_sitsz</id>
-			<properties>
-				<env>dev_sitsz</env>
-			</properties>
-		</profile>
-	</profiles>
+Sam
 
-	<build>
-		<finalName>smartonekiss##${project.version}-${env}-r${svn.revision}</finalName>
-		<filters>
-			<filter>src/main/filters/${env}.properties</filter>
-		</filters>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
-		<plugins>					
-			<plugin>
-    
-    
